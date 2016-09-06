@@ -1,37 +1,69 @@
-words_array = ["ancient", "alien", "mainstream", "archaelogy", "crystal", "skull", "mystery", "legendary", "portal", "sightings", "Giorgio", "vortex", "gravity"] # list of words
-bad_guesses_array = []
-secret_word_chars = [] # make array with characters with .char
-guesses = 6 # guesses = 6 (head, torso, left arm, right arm, left leg, right leg)
-bad_guesses = 0
+require "pry"
+# TODO: handle invalid input (non-letters, already-guessed, more than one character)
+# TODO: show what letters already guessed
+# TODO: ask if they want to play
+# TODO: fix the initial display to show blanks
 
+# TODO: fix turns and don't display the answer at getgo
 
-secret_word = words_array[rand]
-puts secret_word# pick randomly from list
-letters_to_guess = secret_word.length
-puts letters_to_guess.to_i # determine character length with .length
-secret_word_chars << secret_word.chars
-print secret_word_chars
-print letters_to_guess."_ ".times
-while guesses > 0
-  puts "You have #{guesses} guesses left."
-  gets.chomp
-  # if gets.chomp #if this is a letter character
+words = ["HULLABALOO", "CLAPTRAP", "IDIOPATHIC", "BOBBIN", "BAMBOO", "POPPYCOCK", "PERSNICKETY", "IRKED", "NOODLES", "FRIPPERY", "BEFUDDLEMENT", "HABERDASHERY", "DIPHTHONG", "BRITCHES", "SASSAFRAS", "GADABOUTS", "BAZOOKA", "COCKAMAMIE", "EGAD", "MAGMA"]
+
+turns = 7
+secret_word = words.sample
+guesses = []
+
+def valid_guess(info, guesses)
+  if guesses.include?(info)
+    puts "You already guessed that.  Try again."
+  elsif (info.length == 1) && (info.to_i.to_s != info) && (info.to_f.to_s != info)
+    info = info
+  else
+    puts "'#{info}' is not a valid guess.  Try again."
+  end
 end
-# puts letters_to_guess.to_i."_".times
-# set while loop with count down for each wrong count
-#
-# display "_" for each character
-#
-# puts "You have () guesses."
-# ask for a guess
-# ensure input is a character
-# =>
-# =>
-#
-#
-#
-#
-#
-#
-#
-#
+
+def display(word, guesses)
+  masked_word = ""
+  word.each_char do |char|
+    if guesses.include?(char)
+      masked_word = masked_word + char
+    else
+      masked_word = masked_word + "-"
+    end
+  end
+  masked_word
+end
+
+def win_lose(output, secret_word)
+  if !output.include?("-")
+    puts "You win!  The word is #{secret_word}."
+  else
+    puts "Sorry, you lose.  The word is #{secret_word}."
+  end
+end
+
+puts "We're playing hangman now.  The word is #{secret_word.length} letters long.  Guess a letter."
+# puts secret_word #get rid of this
+output = "-"
+until turns == 0 || !output.include?("-")
+
+  stab = gets.chomp.upcase
+
+  worth_checking = valid_guess(stab, guesses)
+  if secret_word.include?(worth_checking)
+    binding.pry
+    puts "'#{worth_checking}' IS in the word!"
+  else
+    puts "'#{worth_checking}' is not in the word."
+    turns-=1
+  end
+  # win_lose_next(output, turns, secret_word)
+  guesses << worth_checking
+  output = display(secret_word, guesses)
+  puts output
+  puts "Already guessed: #{guesses.join(", ")}"
+  puts "Turns left: #{turns}"
+
+end
+
+win_lose(output, secret_word)
