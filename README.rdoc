@@ -6,7 +6,7 @@ User guesses are stored in an initially empty array called "guesses."
 
 ---
 
-User types "ruby fuck_you_hangman.rb" in the console to start the program.
+User types "ruby hangman.rb" in the console to start the program.
 
 Computer selects a random item from "words" using the .sample method.  This value is assigned to the variable "secret_word."
 
